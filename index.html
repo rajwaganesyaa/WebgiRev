@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fasilitas Kesehatan Rumah Sakit di Bandung</title>
+
+    <!-- CSS eksternal -->
+    <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Leaflet Locate Control CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+      <!-- Leaflet Fullscreen CSS -->
+  <link
+    rel="stylesheet"
+    href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css"
+/>
+    <style>
+        /* Tambahan styling untuk peta agar tidak menabrak section lain */
+        .map-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav" id="nav">
+                <a href="#Home" class="nav-link active">Home</a>
+                <a href="#map-section" class="nav-link">Map</a>
+                <a href="#kintil" class="nav-link">Data</a>
+                <a href="#footer" class="nav-link">About Creator</a>
+            </nav>
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="Home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                FASILITAS KESEHATAN<br>
+                RUMAH SAKIT DI BANDUNG
+            </h1>
+            <p class="hero-subtitle">Untuk Memudahkan Akses Rumah Sakit Di Kota Bandung</p>
+        </div>
+    </section>
+
+    <!-- Popular Places Section -->
+    <section class="popular-places">
+        <div class="container">
+            <div class="section-header">
+                <button class="popular-btn">Popular Place</button>
+            </div>
+<section>
+    <div class="hospitals-container">
+        <div class="hospital-card" data-link="https://web.rshs.go.id/">
+            <div class="hospital-image">
+                <img src="Asset/Hasansadikin.jpeg" alt="RS Hasan Sadikin">
+            </div>
+            <div class="hospital-content">
+                <div class="hospital-info">
+                    <h3 class="hospital-name">RS Hasan Sadikin</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="rating-text">5.0</span>
+                    </div>  
+                </div>
+                <button class="arrow-btn"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="hospital-card" data-link="https://rsborromeus.com/">
+            <div class="hospital-image">
+                <img src="Asset/Borromeus.jpg" alt="RS Borromeus">
+            </div>
+            <div class="hospital-content">
+                <div class="hospital-info">
+                    <h3 class="hospital-name">RS Borromeus</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="rating-text">5.0</span>
+                    </div>
+                </div>
+                <button class="arrow-btn"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="hospital-card" data-link="https://www.rssantoyusup.com/">
+            <div class="hospital-image">
+                <img src="Asset/SantoYusup.jpg" alt="RS Santo Yusup" />
+            </div>
+            <div class="hospital-content">
+                <div class="hospital-info">
+                    <h3 class="hospital-name">RS Santo Yusup</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="rating-text">5.0</span>
+                    </div>
+                </div>
+                <button class="arrow-btn"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Peta Rumah Sakit Bandung</h2>
+                <p class="section-subtitle">Temukan lokasi rumah sakit terdekat di Kota Bandung</p>
+            </div>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Cari rumah sakit..." class="search-input" id="searchInput">
+                </div>
+            </div>
+
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+        </div>
+    </section>
+<!-- Data Section -->
+<section class="data-section" id="kintil">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Data Tersedia</h2>
+        </div>
+
+        <div class="data-grid">
+            <!-- Tenaga Kesehatan -->
+            <div class="data-card">
+                <div class="data-icon">
+                   	<i class="fas fa-user-md"></i>  
+                </div>
+                <div class="data-content">
+                    <h3 class="data-title">Tenaga Kesehatan</h3>
+                    <p class="data-text">
+                        Menurut data Badan Pusat Statistik (BPS) Jawa Barat tahun 2023, di Kota Bandung terdapat sekitar 8.969 tenaga kesehatan 
+                        yang mencakup dokter, perawat, bidan, tenaga kefarmasian, dan teknisi laboratorium di tingkat fasilitas kesehatan
+                    </p>
+                </div>
+            </div>
+
+            <!-- Rumah Sakit -->
+            <div class="data-card">
+                <div class="data-icon">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <div class="data-content">
+                    <h3 class="data-title">Rumah Sakit</h3>
+                    <p class="data-text">
+                         Kota Bandung saat ini terdapat 42 rumah sakit, baik umum maupun khusus . Data ini mencakup berbagai jenis rumah sakit milik pemerintah, swasta, TNI/Polri, dan rumah sakit khusus.
+                         Namun, dari total tersebut, 32 rumah sakit bekerja sama dengan BPJS Kesehatan, menyediakan total sekitar 6.227 tempat tidur, sedangkan 10 rumah sakit sisanya tidak bermitra dengan BPJS
+                    </p>
+                </div>
+            </div>
+
+            <!-- Sebaran Penyakit -->
+            <div class="data-card">
+                <div class="data-icon">
+                   	<i class="fas fa-virus"></i>
+                </div>
+                <div class="data-content">-
+                    <h3 class="data-title">Sebaran Penyakit</h3>
+                    <p class="data-text">
+                        Di Kota Bandung, penyakit berat yang sering memerlukan perawatan rumah sakit meliputi DBD dengan 1.741 kasus pada awal 2024, TBC sebanyak 18.314 kasus pada 2023, serta penyakit kronis seperti 
+                        hipertensi, diabetes, stroke, dan gagal jantung. Lonjakan kasus ini menunjukkan tingginya beban layanan kesehatan di kota tersebut.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="developer-info">
+                        <div class="avatar">RGA</div>
+                        <div class="developer-details">
+                            <h4 class="developer-name">Rajwa Ganesya Athallah</h4>
+                            <p class="developer-role">Web Developer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Kontak</h4>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+62 878-8542-7854</span>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Sosial Media</h4>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/rajwaganesyaa/" target="_blank" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/rajwa-ganesya-3838302b7/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Email</h4>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Rajwaganesyaa@upi.edu</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fasilitas Kesehatan Bandung. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script eksternal -->
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Leaflet Locate Control -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+     <script
+    src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"
+  ></script>
+    <!-- Inisialisasi Map -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menuBtn');
+            const nav = document.getElementById('nav');
+            
+            menuBtn.addEventListener('click', function() {
+                nav.classList.toggle('active');
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Close mobile menu if open
+                    nav.classList.remove('active');
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Hospital data
+            const hospitals = [
+                { 
+                    name: "RSUP Dr. Hasan Sadikin", 
+                    address: "Jl. Pasteur No. 38, Bandung", 
+                    coords: [-6.89806, 107.59833],
+                    rating: 5.0
+                },
+                { 
+                    name: "RSUD Kota Bandung (Ujung Berung)", 
+                    address: "Jl. Rumah Sakit No. 22, Ujung Berung, Bandung", 
+                    coords: [-6.9145, 107.6952],
+                    rating: 4.8
+                },
+                { 
+                    name: "RSIA Melinda 1", 
+                    address: "3JV3+68F, Jl. Pajajaran No.46, Pasir Kaliki, Kec. Cicendo, Kota Bandung, Jawa Barat 40171", 
+                    coords: [-6.906532559583475, 107.60331941217018],
+                    rating: 4.0
+                },
+                { 
+                    name: "RS Melinda 2", 
+                    address: "Jl. Dr. Cipto No.1, Pasir Kaliki, Kec. Cicendo, Kota Bandung, Jawa Barat 40171", 
+                    coords: [-6.9058935001230095, 107.59816957098948],
+                    rating: 3.8
+                },
+                { 
+                    name: "RS Al-Islam Bandung", 
+                    address: "Jl. Soekarno–Hatta No. 644, Rancasari, Bandung", 
+                    coords: [-6.938964, 107.669379],
+                    rating: 4.7
+                },
+                { 
+                    name: "RS Sariningsih Martadinata", 
+                    address: "Jl. L. L. R.E. Martadinata No.9, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115", 
+                    coords: [-6.906889367380977, 107.61138103892495],
+                    rating: 4.7
+                },
+                { 
+                    name: "RS Mata Cicendo", 
+                    address: "Jl. Cicendo No. 4, Bandung", 
+                    coords: [-6.9099, 107.6040],
+                    rating: 4.6
+                },
+                { 
+                    name: "RS Immanuel Bandung", 
+                    address: "Jl. Kopo No. 161, Bandung", 
+                    coords: [-6.9435, 107.6020],
+                    rating: 4.5
+                },
+                { 
+                    name: "Rumah Sakit Angkatan Udara (RSAU) dr. M. Salamun", 
+                    address: "Jl. Ciumbuleuit No.203, Ciumbuleuit, Kec. Cidadap, Kota Bandung, Jawa Barat 40142", 
+                    coords: [-6.862786972542407, 107.60452621000402],
+                    rating: 4.5
+                },
+                { 
+                    name: "Rumah Sakit Mitra Kasih", 
+                    address: "Jl. Jend. H. Amir Machmud No.341, Cigugur Tengah, Kec. Cimahi Tengah, Kota Cimahi, Jawa Barat 40522", 
+                    coords: [-6.8838795459691555, 107.55255966161768],
+                    rating: 3.9
+                },
+                { 
+                    name: "RS Santo Borromeus", 
+                    address: "Jl. Ir. H. Juanda No. 100, Bandung", 
+                    coords: [-6.893915370105972, 107.61371191535581],
+                    rating: 4.9
+                },
+                 { 
+                    name: "RS Santo Yusup", 
+                    address: "Jl. Cikutra No.7, Cikutra, Kec. Cibeunying Kidul, Kota Bandung, Jawa Barat 40124", 
+                    coords: [-6.906946, 107.643543],
+                    rating: 4.5
+                },
+                { 
+                    name: "RS Muhammadiyah Bandung", 
+                    address: "Jl. KH Ahmad Dahlan No. 53, Bandung", 
+                    coords: [-6.9250, 107.6175],
+                    rating: 4.4
+                },
+                { 
+                    name: "RS Advent Bandung", 
+                    address: "Jl. Cihampelas No. 161, Bandung", 
+                    coords: [-6.891651600981945, 107.6033719593251],
+                    rating: 4.3
+                },
+                { 
+                    name: "RSKB Halmahera Siaga", 
+                    address: "Jl. L. L. R.E. Martadinata No.28, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115", 
+                    coords: [-6.906473427963633, 107.6155415238514],
+                    rating: 4.1
+                },
+                { 
+                    name: "Rumah Sakit Ibu & Anak Limijati", 
+                    address: "Jalan LLRE Martadinata St No.39, Citarum, Bandung Wetan, Bandung City, West Java 40115", 
+                    coords: [-6.906047950010738, 107.61361642573667],
+                    rating: 3.4
+                },
+                { 
+                    name: "RS Rajawali", 
+                    address: "Jl. Rajawali No. 73, Bandung", 
+                    coords: [-6.912273766887261, 107.573440139094],
+                    rating: 4.2
+                },
+                                { 
+                    name: "Rumah Sakit Santosa Bandung Central", 
+                    address: "Jl. Kebon Jati No.38, Kb. Jeruk, Kec. Andir, Kota Bandung, Jawa Barat 40181", 
+                    coords: [-6.915416870872785, 107.60035554133067],
+                    rating: 4.6
+                },
+                { 
+                    name: "Rumah Sakit Paru Dr. H. A. Rotinsulu", 
+                    address: "Jl. Bukit Jarian No.40, Hegarmanah, Kec. Cidadap, Kota Bandung, Jawa Barat 40141", 
+                    coords: [-6.876740449630526, 107.60760971775687],
+                    rating: 4.2
+                },
+                    { 
+                    name: "RSIA Grha Bunda", 
+                    address: "3JPW+P6X, Jl. Terusan Jakarta No.15 - 17, Babakan Surabaya, Kec. Kiaracondong, Kota Bandung, Jawa Barat 40281", 
+                    coords: [-6.912320008486639, 107.64552466139928],
+                    rating: 4.1
+                },
+                { 
+                    name: "RS Kebonjati", 
+                    address: "Jl. Kebonjati No. 152, Bandung", 
+                    coords: [-6.9210, 107.6000],
+                    rating: 4.1
+                }
+            ];
+
+        const map = L.map('map', {
+    center: [-6.91, 107.61],
+    zoom: 12,
+    fullscreenControl: true,
+    fullscreenControlOptions: { position: 'topright' }
+  });
+
+  // Basemap Layers
+  const baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'    
+  }).addTo(map);
+
+  const baseTopo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenTopoMap'
+  });
+
+  const baseHot = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    attribution: '&copy; OSM HOT'
+  });
+
+  const baseMaps = {
+    "OpenStreetMap": baseOSM,
+    "Topographic": baseTopo,
+    "Humanitarian (HOT)": baseHot
+  };
+
+  // Overlay Layers object
+  const overlayLayers = {};
+
+  // Layer control
+  const layerControl = L.control.layers(baseMaps, overlayLayers).addTo(map);
+
+  // Load GeoJSON dengan fetch
+  fetch('Asset/BatasAdmin.geojson')
+    .then(res => res.json())
+    .then(geojsonData => {
+      const batasAdmin = L.geoJSON(geojsonData, {
+        style: {
+          color: "#ff5733",
+          weight: 2,
+          fillOpacity: 0
+        },
+        onEachFeature: (feature, layer) => {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup("Wilayah: " + feature.properties.name);
+          }
+        }
+      });
+      batasAdmin.addTo(map);
+      overlayLayers["🗺️ Batas Administrasi"] = batasAdmin;
+      layerControl.addOverlay(batasAdmin, "🗺️ Batas Administrasi");
+    })
+    .catch(err => console.error("Gagal load Batas Administrasi", err));
+
+  fetch('Asset/Jalan.geojson')
+    .then(res => res.json())
+    .then(geojsonData => {
+      const jalan = L.geoJSON(geojsonData, {
+        style: {
+          color: "black",
+          weight: 1.5
+        },
+        onEachFeature: (feature, layer) => {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup("Jalan: " + feature.properties.name);
+          }
+        }
+      });
+      jalan.addTo(map);
+      overlayLayers["🚗 Jalan"] = jalan;
+      layerControl.addOverlay(jalan, "🚗 Jalan");
+    })
+    .catch(err => console.error("Gagal load Jalan", err));
+
+  fetch('Asset/Sungai.geojson')
+    .then(res => res.json())
+    .then(geojsonData => {
+      const sungai = L.geoJSON(geojsonData, {
+        style: {
+          color: "cyan",
+          weight: 1.5
+        },
+        onEachFeature: (feature, layer) => {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup("Sungai: " + feature.properties.name);
+          }
+        }
+      });
+      sungai.addTo(map);
+      overlayLayers["🌊 Sungai"] = sungai;
+      layerControl.addOverlay(sungai, "🌊 Sungai");
+    })
+    .catch(err => console.error("Gagal load Sungai", err));
+  
+            // Locate Control
+            L.control.locate({
+                position: 'topright',
+                strings: {
+                    title: "Temukan lokasi saya"
+                },
+                flyTo: true,
+                keepCurrentZoomLevel: true,
+                locateOptions: {
+                    enableHighAccuracy: true
+                }
+            }).addTo(map);
+
+            // Event saat masuk atau keluar fullscreen
+    map.on('enterFullscreen', function(){
+      console.log('Masuk Fullscreen');
+    });
+
+    map.on('exitFullscreen', function(){
+      console.log('Keluar Fullscreen');
+    });
+            // Add markers for hospitals
+            const hospitalMarkers = [];
+            hospitals.forEach(hospital => {
+                const marker = L.marker(hospital.coords).addTo(map);
+                const link = `https://www.google.com/maps?q=${hospital.coords[0]},${hospital.coords[1]}`;
+                
+                // Create star rating HTML
+                let starsHtml = '';
+                const fullStars = Math.floor(hospital.rating);
+                const hasHalfStar = hospital.rating % 1 >= 0.5;
+                
+                for (let i = 0; i < fullStars; i++) {
+                    starsHtml += '<i class="fas fa-star"></i>';
+                }
+                
+                if (hasHalfStar) {
+                    starsHtml += '<i class="fas fa-star-half-alt"></i>';
+                }
+                
+                const emptyStars = 5 - Math.ceil(hospital.rating);
+                for (let i = 0; i < emptyStars; i++) {
+                    starsHtml += '<i class="far fa-star"></i>';
+                }
+                
+                marker.bindPopup(`
+                    <b>${hospital.name}</b><br>
+                    ${hospital.address}<br>
+                    <div class="fas fa-star-half-alt">
+                        ${starsHtml} ${hospital.rating.toFixed(1)}
+                    </div>
+                    <a href="${link}" target="_blank">📍 Lihat di Google Maps</a>
+                `);
+                
+                hospitalMarkers.push({
+                    marker: marker,
+                    name: hospital.name,
+                    address: hospital.address
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                hospitalMarkers.forEach(hospital => {
+                    const isVisible = hospital.name.toLowerCase().includes(searchTerm) || 
+                                      hospital.address.toLowerCase().includes(searchTerm);
+                    
+                    if (isVisible) {
+                        hospital.marker.addTo(map);
+                    } else {
+                        map.removeLayer(hospital.marker);
+                    }
+                });
+            });
+
+            // Make hospital cards clickable
+            document.querySelectorAll('.hospital-card').forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    if (index < hospitals.length) {
+                        const hospital = hospitals[index];
+                        map.flyTo(hospital.coords, 15);
+                        
+                        // Open the marker's popup
+                        hospitalMarkers[index].marker.openPopup();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
